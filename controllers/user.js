@@ -30,7 +30,7 @@ const updateProfile = (req, res, next) => {
     .then((user) => res.send({ email: user.email, name: user.name }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ValidationError('Переданы некорректные данные в методы создания пользователя'));
+        next(new ValidationError('Переданы некорректные данные в методы обновления данных пользователя'));
       } else {
         next(err);
       }
