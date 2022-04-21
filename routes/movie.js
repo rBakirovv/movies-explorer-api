@@ -5,15 +5,12 @@ const {
   deleteMovie,
 } = require('../controllers/movie');
 
-/*
-const { validateUserCard, validateId } = require('../middlewares/validations');
-+ валидация
-*/
+const { validateMovie, validateId } = require('../middlewares/validations');
 
 router.get('/movies', getMovies);
 
-router.post('/movies', createMovie);
+router.post('/movies', validateMovie, createMovie);
 
-router.delete('/movies/:id', deleteMovie);
+router.delete('/movies/:id', validateId, deleteMovie);
 
 module.exports = router;

@@ -4,17 +4,10 @@ const {
   updateProfile,
 } = require('../controllers/user');
 
-/*
-const {
-  validateUserData,
-  validateUserAvatar,
-  validateId,
-} = require('../middlewares/validations');
-+ валидация в roter.
-*/
+const { validateUserData } = require('../middlewares/validations');
 
 router.get('/users/me', getCurrentUser);
 
-router.patch('/users/me', updateProfile);
+router.patch('/users/me', validateUserData, updateProfile);
 
 module.exports = router;
