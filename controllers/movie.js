@@ -56,13 +56,13 @@ const createMovie = (req, res, next) => {
 };
 
 const deleteMovie = (req, res, next) => {
-  Movie.findOne(req.params.movieId)
+  Movie.findOne(req.params.id)
     .orFail(() => {
       throw new ErrorNotFound('Фильм не найден');
     })
     .then((movie) => {
       if (movie.owner.toString() === req.user._id) {
-        Movie.deleteOne(req.params.movieId)
+        Movie.deleteOne(req.params.id)
           .then((deletedMovie) => {
             res.send({ deletedMovie });
           });
