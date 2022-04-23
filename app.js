@@ -8,6 +8,7 @@ const user = require('./routes/user');
 const movie = require('./routes/movie');
 const { createUser, login, logout } = require('./controllers/user');
 const { validateCreateUser, validateLogin } = require('./middlewares/validations');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
 const ErrorNotFound = require('./errors/ErrorNotFound');
@@ -21,6 +22,7 @@ mongoose.connect(NODE_ENV === 'production' ? DATABASE : 'mongodb://localhost:270
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(requestLogger);
 
 app.post('/signup', validateCreateUser, createUser);
 app.post('/signin', validateLogin, login);
@@ -30,6 +32,8 @@ app.use(auth);
 
 app.use('/', user);
 app.use('/', movie);
+
+app.use(errorLogger);
 
 app.use(errors());
 
