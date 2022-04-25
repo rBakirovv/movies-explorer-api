@@ -56,19 +56,16 @@ const createMovie = (req, res, next) => {
 };
 
 const deleteMovie = (req, res, next) => {
-  Movie.findOne(req.params.id)
+  Movie.findById(req.params.id)
     .orFail(() => {
       throw new ErrorNotFound('Фильм не найден');
     })
     .then((movie) => {
-      if (movie.owner.toString() === req.user._id) {
-        Movie.deleteOne(req.params.id)
-          .then((deletedMovie) => {
-            res.send({ deletedMovie });
-          });
-      } else {
-        throw new Forbidden('Недостаточно прав для удаленя фильма');
+      if (movie.owner.toString() === req.user._id.toString()) {
+        return movie.remove()
+          .then(() => res.send({ message: 'Фильм удалён' }));
       }
+      throw new Forbidden('Недостаточно прав для удаленя фильма');
     })
     .catch((err) => {
       if (err.name === 'CastError') {
