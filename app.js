@@ -4,10 +4,9 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
-const user = require('./routes/user');
-const movie = require('./routes/movie');
-const { createUser, login, logout } = require('./controllers/user');
-const { validateCreateUser, validateLogin } = require('./middlewares/validations');
+const userRouter = require('./routes/user');
+const movieRouter = require('./routes/movie');
+const authRouter = require('./routes/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
@@ -17,29 +16,27 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 
-mongoose.connect(NODE_ENV === 'production' ? DATABASE : 'mongodb://localhost:27017/bitfilmsdb');
+mongoose.connect(NODE_ENV === 'production' ? DATABASE : 'mongodb://localhost:27017/moviesdb');
 
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
 
-app.post('/signup', validateCreateUser, createUser);
-app.post('/signin', validateLogin, login);
-app.delete('/signout', logout);
+app.use('/', authRouter);
 
 app.use(auth);
 
-app.use('/', user);
-app.use('/', movie);
-
-app.use(errorLogger);
-
-app.use(errors());
+app.use('/', userRouter);
+app.use('/', movieRouter);
 
 app.use((req, res, next) => {
   next(new ErrorNotFound('Запрашиваемый ресурс не найден'));
 });
+
+app.use(errorLogger);
+
+app.use(errors());
 
 app.use(errorHandler);
 
