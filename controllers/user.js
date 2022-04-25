@@ -15,11 +15,7 @@ const getCurrentUser = (req, res, next) => {
     })
     .then((user) => res.send({ email: user.email, name: user.name }))
     .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new ValidationError('Переданы некорректные данные'));
-      } else {
-        next(err);
-      }
+      next(err);
     })
     .catch(next);
 };
