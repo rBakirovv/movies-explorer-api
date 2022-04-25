@@ -33,6 +33,8 @@ const updateProfile = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError('Переданы некорректные данные в методы обновления данных пользователя'));
+      } else if (err.codeName === 'DuplicateKey') {
+        throw new ErrorConflict('Пользователь с таким email уже существует');
       } else {
         next(err);
       }
