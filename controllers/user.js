@@ -65,10 +65,21 @@ const createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((user) => res.send({
-      name: user.name,
-      _id: user._id,
-    }))
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', {
+        expiresIn: '7d',
+      });
+      res
+        .cookie('jwt', token, {
+          expires: new Date(Date.now() + 7 * 24 * 3600000),
+          httpOnly: true,
+          sameSite: true,
+        })
+        .send({
+          name: user.name,
+          _id: user._id,
+        });
+    })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new ValidationError('Переданы некорректные данные в методы создания пользователя'));
