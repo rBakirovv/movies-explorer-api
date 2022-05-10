@@ -41,8 +41,8 @@ const validateUserData = celebrate({
 
 const validateLogin = celebrate({
   [Segments.BODY]: Joi.object().keys({
-    name: Joi.string().min(2).max(30).required(),
     email: Joi.string().email().min(2).required(),
+    password: Joi.string().min(2).required(),
   }),
 });
 

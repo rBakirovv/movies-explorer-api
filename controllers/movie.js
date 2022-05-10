@@ -7,7 +7,7 @@ const getMovies = (req, res, next) => {
   const owner = req.user._id;
 
   Movie.find({ owner })
-    .then((movies) => res.send({ movies }))
+    .then((movies) => res.send(movies))
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные'));
@@ -45,7 +45,7 @@ const createMovie = (req, res, next) => {
     movieId,
     owner: req.user._id,
   })
-    .then((movie) => res.send({ data: movie }))
+    .then((movie) => res.send(movie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError('Переданы некорректные данные'));
