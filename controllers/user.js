@@ -13,7 +13,7 @@ const getCurrentUser = (req, res, next) => {
     .orFail(() => {
       throw new ErrorNotFound('Пользователь не найден');
     })
-    .then((user) => res.send({ email: user.email, name: user.name }))
+    .then((user) => res.send({ email: user.email, name: user.name, _id: user._id }))
     .catch((err) => {
       next(err);
     })
@@ -34,7 +34,7 @@ const updateProfile = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError('Переданы некорректные данные в методы обновления данных пользователя'));
       } else if (err.codeName === 'DuplicateKey') {
-        throw new ErrorConflict('Пользователь с таким email уже существует');
+        next(new ErrorConflict('Пользователь с таким email уже существует'));
       } else {
         next(err);
       }
