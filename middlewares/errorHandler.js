@@ -3,6 +3,7 @@ const errorHandler = (err, req, res, next) => {
 
   res.status(status).send({
     message: err.message,
+    err,
   });
   next();
 };
